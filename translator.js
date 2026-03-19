@@ -5,46 +5,55 @@ const LinkedOutTranslator = (() => {
   };
 
   const TONE_PROMPTS = {
-    blunt: `You are LinkedOut, a corporate speak decoder. You rewrite LinkedIn posts to reveal what the person ACTUALLY means, in brutally honest language.
+    blunt: `You rewrite LinkedIn posts as if the author suddenly became brutally honest about their real motivation. Write in FIRST PERSON — you are rewriting the post as the same person, just without the filter.
 
-CRITICAL LANGUAGE RULE — you MUST follow this:
-Your output MUST be in the EXACT SAME language as the input. English in → English out. French in → French out. Spanish in → Spanish out. NEVER switch languages. This is not a translation tool between languages.
+Example:
+Original: "Thrilled to announce I've joined XYZ as VP of Strategy!"
+Rewrite: "I got a new job and I need everyone to know how important I am now."
 
-Other rules:
-- Strip all corporate jargon, humble-brags, and hype-driven messaging
-- Be direct and blunt — say what they really mean
-- If the post contains genuine useful information, preserve it plainly
+Rules:
+- Always write in first person, as the author being honest
+- Expose the real intent: self-promotion, humble-bragging, selling, clout-chasing, virtue signaling
+- Be ruthlessly direct — say the quiet part out loud
+- Strip all buzzwords, jargon, and hollow enthusiasm
 - Keep it shorter than the original
 - Never add hashtags or emojis
-- Return ONLY the rewritten text, no preamble or explanation`,
+- Reply in the SAME language as the input (EN→EN, FR→FR, ES→ES — never switch)
+- Return ONLY the rewritten text`,
 
-    sarcastic: `You are LinkedOut, a corporate speak decoder. You rewrite LinkedIn posts to reveal what the person ACTUALLY means, with dry wit and sarcasm.
+    sarcastic: `You rewrite LinkedIn posts as if the author had a sarcastic inner voice that couldn't help slipping out. Write in FIRST PERSON with dry wit and irony — the author is saying what they really mean, but dripping with self-aware sarcasm.
 
-CRITICAL LANGUAGE RULE — you MUST follow this:
-Your output MUST be in the EXACT SAME language as the input. English in → English out. French in → French out. Spanish in → Spanish out. NEVER switch languages. This is not a translation tool between languages.
+Example:
+Original: "Thrilled to announce I've joined XYZ as VP of Strategy!"
+Rewrite: "I changed jobs and obviously the world needed to know. Please clap."
 
-Other rules:
-- Decode the corporate jargon with sharp, witty commentary
-- Add dry humor — expose the absurdity without being mean-spirited
-- If the post contains genuine useful information, preserve it with a lighter touch
+Rules:
+- Always write in first person, as the author with a sarcastic inner voice
+- Use irony, deadpan humor, and self-aware commentary
+- Make it funny — expose the absurdity of corporate LinkedIn culture
 - Keep it shorter than the original
 - Never add hashtags or emojis
-- Return ONLY the rewritten text, no preamble or explanation`,
+- Reply in the SAME language as the input (EN→EN, FR→FR, ES→ES — never switch)
+- Return ONLY the rewritten text`,
 
-    neutral: `You are LinkedOut, a corporate speak decoder. You rewrite LinkedIn posts in plain, clear language without corporate jargon.
+    neutral: `You rewrite LinkedIn posts in plain, clear language without any corporate jargon. Write in FIRST PERSON — same author, same message, just stated simply and directly.
 
-CRITICAL LANGUAGE RULE — you MUST follow this:
-Your output MUST be in the EXACT SAME language as the input. English in → English out. French in → French out. Spanish in → Spanish out. NEVER switch languages. This is not a translation tool between languages.
+Example:
+Original: "Thrilled to announce I've joined XYZ as VP of Strategy!"
+Rewrite: "I started a new job as VP of Strategy at XYZ."
 
-Other rules:
+Rules:
+- Always write in first person, as the author speaking plainly
 - Replace all corporate speak with straightforward language
-- Maintain a neutral, matter-of-fact tone
-- If the post contains genuine useful information, preserve it clearly
+- Keep the facts, remove the hype
+- Neutral, matter-of-fact tone — no judgment, no snark
 - Keep it shorter than the original
 - Never add hashtags or emojis
-- Return ONLY the rewritten text, no preamble or explanation`,
+- Reply in the SAME language as the input (EN→EN, FR→FR, ES→ES — never switch)
+- Return ONLY the rewritten text`,
   };
 
+  const PROMPT_VERSION = 3;
   const cache = new Map();
   const postCache = new Map();
 
@@ -187,11 +196,11 @@ Other rules:
 
     const tone = settings.tone || "blunt";
     const textHash = await hashText(postText);
-    const cacheKey = await hashText(`${tone}:${postText}`);
+    const cacheKey = await hashText(`v${PROMPT_VERSION}:${tone}:${postText}`);
     const postId = options.postId || null;
 
     if (postId) {
-      const postCacheKey = `${tone}:${postId}`;
+      const postCacheKey = `v${PROMPT_VERSION}:${tone}:${postId}`;
       const postEntry = postCache.get(postCacheKey);
       if (postEntry && postEntry.textHash === textHash) {
         return postEntry.translation;
@@ -214,7 +223,7 @@ Other rules:
     persistCache();
 
     if (postId) {
-      const postCacheKey = `${tone}:${postId}`;
+      const postCacheKey = `v${PROMPT_VERSION}:${tone}:${postId}`;
       postCache.set(postCacheKey, {
         translation: result.text,
         textHash,
@@ -245,7 +254,7 @@ Other rules:
       );
     }
 
-    const cacheKey = await hashText(`linkedinize:${text}`);
+    const cacheKey = await hashText(`v${PROMPT_VERSION}:linkedinize:${text}`);
     if (cache.has(cacheKey)) {
       return cache.get(cacheKey);
     }
