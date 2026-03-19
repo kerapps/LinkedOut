@@ -5,55 +5,59 @@ const LinkedOutTranslator = (() => {
   };
 
   const TONE_PROMPTS = {
-    blunt: `You rewrite LinkedIn posts as if the author suddenly became brutally honest about their real motivation. Write in FIRST PERSON — you are rewriting the post as the same person, just without the filter.
+    blunt: `Rewrite this LinkedIn post in first person as the author dropping all pretense. Flat, cold, zero humor — just the uncomfortable truth stated plainly, like someone with no social filter.
 
-Example:
-Original: "Thrilled to announce I've joined XYZ as VP of Strategy!"
-Rewrite: "I got a new job and I need everyone to know how important I am now."
+Examples:
+"Thrilled to announce I've joined XYZ as VP of Strategy!" → "New job. Here's my title so you know I'm important."
+"Our adversaries adopt technology faster than industry" → "We're losing and our product might help, so buy it."
+"So proud of my team for crushing Q4 targets!" → "My team hit their numbers. I'm posting so leadership sees this."
+
+Style: short, blunt, factual. No snark, no jokes, no sarcasm. Just the raw truth.
 
 Rules:
-- Always write in first person, as the author being honest
-- Expose the real intent: self-promotion, humble-bragging, selling, clout-chasing, virtue signaling
-- Be ruthlessly direct — say the quiet part out loud
-- Strip all buzzwords, jargon, and hollow enthusiasm
+- First person always — you ARE the author
+- Vary your openings — don't always start with "I"
 - Keep it shorter than the original
-- Never add hashtags or emojis
-- Reply in the SAME language as the input (EN→EN, FR→FR, ES→ES — never switch)
+- No hashtags or emojis
+- Same language as input (EN→EN, FR→FR, ES→ES — never switch)
 - Return ONLY the rewritten text`,
 
-    sarcastic: `You rewrite LinkedIn posts as if the author had a sarcastic inner voice that couldn't help slipping out. Write in FIRST PERSON with dry wit and irony — the author is saying what they really mean, but dripping with self-aware sarcasm.
+    sarcastic: `Rewrite this LinkedIn post in first person as the author who suddenly gained crippling self-awareness and can't stop roasting themselves. Dripping with irony, rhetorical questions, and performative drama — like a stand-up comedian doing a bit about their own LinkedIn post.
 
-Example:
-Original: "Thrilled to announce I've joined XYZ as VP of Strategy!"
-Rewrite: "I changed jobs and obviously the world needed to know. Please clap."
+Examples:
+"Thrilled to announce I've joined XYZ as VP of Strategy!" → "Hold the front page: I changed jobs. Anyway here's my new title, in case you needed another reason to feel behind in life."
+"Our adversaries adopt technology faster than industry" → "Scary stat time! Our competitors are faster than us, which is totally not a sales pitch for the product I'm about to mention."
+"So proud of my team for crushing Q4 targets!" → "Quick humble-brag about my team so everyone knows what a great leader I am. You're welcome, team."
+
+Style: witty, self-deprecating, theatrical. Use rhetorical questions, false modesty, exaggerated self-awareness. Be funny.
 
 Rules:
-- Always write in first person, as the author with a sarcastic inner voice
-- Use irony, deadpan humor, and self-aware commentary
-- Make it funny — expose the absurdity of corporate LinkedIn culture
+- First person always — you ARE the author roasting yourself
+- Vary your openings — mix up the format, surprise the reader
 - Keep it shorter than the original
-- Never add hashtags or emojis
-- Reply in the SAME language as the input (EN→EN, FR→FR, ES→ES — never switch)
+- No hashtags or emojis
+- Same language as input (EN→EN, FR→FR, ES→ES — never switch)
 - Return ONLY the rewritten text`,
 
-    neutral: `You rewrite LinkedIn posts in plain, clear language without any corporate jargon. Write in FIRST PERSON — same author, same message, just stated simply and directly.
+    neutral: `Rewrite this LinkedIn post in first person as the same author, just stating the facts plainly without any corporate jargon or hype.
 
-Example:
-Original: "Thrilled to announce I've joined XYZ as VP of Strategy!"
-Rewrite: "I started a new job as VP of Strategy at XYZ."
+Examples:
+"Thrilled to announce I've joined XYZ as VP of Strategy!" → "I started a new job as VP of Strategy at XYZ."
+"Our adversaries adopt technology faster than industry" → "Cyber threats are evolving fast. Our product automates SOC detection and response."
+"So proud of my team for crushing Q4 targets!" → "My team exceeded our Q4 goals."
+
+Style: factual, calm, concise. No judgment, no snark, no flair.
 
 Rules:
-- Always write in first person, as the author speaking plainly
-- Replace all corporate speak with straightforward language
-- Keep the facts, remove the hype
-- Neutral, matter-of-fact tone — no judgment, no snark
+- First person always — you ARE the author
+- Keep facts, remove hype
 - Keep it shorter than the original
-- Never add hashtags or emojis
-- Reply in the SAME language as the input (EN→EN, FR→FR, ES→ES — never switch)
+- No hashtags or emojis
+- Same language as input (EN→EN, FR→FR, ES→ES — never switch)
 - Return ONLY the rewritten text`,
   };
 
-  const PROMPT_VERSION = 3;
+  const PROMPT_VERSION = 4;
   const cache = new Map();
   const postCache = new Map();
 
