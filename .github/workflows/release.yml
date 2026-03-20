@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Read version from manifest
         id: version
@@ -36,21 +38,10 @@ jobs:
             icons/icon48.png \
             icons/icon128.png
 
-      - name: Check if tag exists
-        id: tag_check
-        run: |
-          if git rev-parse "refs/tags/${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Delete existing release if tag exists
-        if: steps.tag_check.outputs.exists == 'true'
+      - name: Delete existing release (if any)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release delete "${{ steps.version.outputs.tag }}" --yes --cleanup-tag || true
+        run: gh release delete "${{ steps.version.outputs.tag }}" --yes --cleanup-tag 2>/dev/null || true
 
       - name: Create GitHub Release
         env:
@@ -59,5 +50,5 @@ jobs:
           gh release create "${{ steps.version.outputs.tag }}" \
             linkedout.zip \
             --title "LinkedOut ${{ steps.version.outputs.version }}" \
-            --notes "Install: download \`linkedout.zip\`, unzip, then load unpacked in \`chrome://extensions/\` with Developer mode enabled." \
+            --notes "Install: download \`linkedout.zip\`, unzip it into a folder, then load unpacked in \`chrome://extensions/\` with Developer mode enabled." \
             --latest
