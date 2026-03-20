@@ -6,6 +6,9 @@ store-assets/*.png
 store-assets/*.jpg
 store-assets/*.jpeg
 
+# Allow the hero image used in README
+!store-assets/store-hero.png
+
 # OS files
 .DS_Store
 Thumbs.db
