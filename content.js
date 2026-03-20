@@ -297,7 +297,7 @@
 
     const header = document.createElement("div");
     header.className = "linkedout-card-header";
-    header.innerHTML = `<span class="linkedout-label">BuzzKill</span>`;
+    header.innerHTML = `<img src="${chrome.runtime.getURL("icons/icon16.png")}" alt="" class="linkedout-label-icon"><span class="linkedout-label">BuzzKill</span>`;
 
     const toggle = document.createElement("button");
     toggle.className = "linkedout-toggle";
@@ -382,7 +382,7 @@
     const hud = document.createElement("div");
     hud.className = "linkedout-hud";
     hud.innerHTML = `
-      <button class="linkedout-hud-fab" title="BuzzKill">bk</button>
+      <button class="linkedout-hud-fab" title="BuzzKill"><img src="${chrome.runtime.getURL("icons/icon48.png")}" alt="BuzzKill" class="linkedout-hud-fab-icon"></button>
       <div class="linkedout-hud-panel" aria-hidden="true">
         <div class="linkedout-hud-header">
           <strong>BuzzKill</strong>
