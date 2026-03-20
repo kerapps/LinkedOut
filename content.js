@@ -297,7 +297,7 @@
 
     const header = document.createElement("div");
     header.className = "linkedout-card-header";
-    header.innerHTML = `<img src="${chrome.runtime.getURL("icons/icon16.png")}" alt="" class="linkedout-label-icon"><span class="linkedout-label">BuzzKill</span>`;
+    header.innerHTML = `<img src="${chrome.runtime.getURL("icons/icon16.png")}" alt="BuzzKill" class="linkedout-label-icon">`;
 
     const toggle = document.createElement("button");
     toggle.className = "linkedout-toggle";
