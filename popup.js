@@ -7,6 +7,7 @@ const DEFAULTS = {
   autoTranslate: false,
   hideOriginal: false,
   removePromoted: true,
+  keepMentionsLinks: false,
 };
 
 function modelForProvider(provider) {
@@ -43,6 +44,7 @@ function readSettingsFromForm() {
     autoTranslate: $("autoTranslate").checked,
     hideOriginal: $("hideOriginal").checked,
     removePromoted: $("removePromoted").checked,
+    keepMentionsLinks: $("keepMentionsLinks").checked,
   };
 }
 
@@ -76,6 +78,7 @@ async function loadSettings() {
   $("autoTranslate").checked = settings.autoTranslate;
   $("hideOriginal").checked = settings.hideOriginal;
   $("removePromoted").checked = settings.removePromoted;
+  $("keepMentionsLinks").checked = !!settings.keepMentionsLinks;
   $("statModelUsed").textContent = modelForProvider(settings.provider);
 }
 
@@ -193,7 +196,7 @@ $("toggleKeyVisibility").addEventListener("click", () => {
 });
 
 // Auto-save settings changes.
-["provider", "tone", "autoTranslate", "hideOriginal", "removePromoted"].forEach(
+["provider", "tone", "autoTranslate", "hideOriginal", "removePromoted", "keepMentionsLinks"].forEach(
   (id) => {
     $(id).addEventListener("change", () => scheduleAutoSave(0));
   }

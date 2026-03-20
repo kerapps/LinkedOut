@@ -92,7 +92,7 @@ Rules:
 - Return ONLY the rewritten text`,
   };
 
-  const PROMPT_VERSION = 8;
+  const PROMPT_VERSION = 9;
   const cache = new Map();
   const postCache = new Map();
 
@@ -179,6 +179,7 @@ Rules:
       autoTranslate: false,
       hideOriginal: false,
       removePromoted: true,
+      keepMentionsLinks: false,
     };
     const result = await chrome.storage.sync.get("linkedout_settings");
     return { ...defaults, ...result.linkedout_settings };
@@ -188,8 +189,13 @@ Rules:
     return LinkedOutConfig.linkedinizePrompt;
   }
 
-  function humanTranslatePrompt(tone) {
-    return TONE_PROMPTS[tone] || TONE_PROMPTS.blunt;
+  function humanTranslatePrompt(tone, keepMentionsLinks) {
+    const base = TONE_PROMPTS[tone] || TONE_PROMPTS.blunt;
+    if (keepMentionsLinks) return base;
+    return base.replace(
+      "- KEEP @mentions of people and any URLs/links from the original\n",
+      "- Strip @mentions and URLs/links from the original\n"
+    );
   }
 
   async function sendToProvider({
@@ -248,12 +254,14 @@ Rules:
     }
 
     const tone = settings.tone || "blunt";
+    const keepML = !!settings.keepMentionsLinks;
+    const cachePrefix = `v${PROMPT_VERSION}:${tone}:ml${keepML ? 1 : 0}`;
     const textHash = await hashText(postText);
-    const cacheKey = await hashText(`v${PROMPT_VERSION}:${tone}:${postText}`);
+    const cacheKey = await hashText(`${cachePrefix}:${postText}`);
     const postId = options.postId || null;
 
     if (postId) {
-      const postCacheKey = `v${PROMPT_VERSION}:${tone}:${postId}`;
+      const postCacheKey = `${cachePrefix}:${postId}`;
       const postEntry = postCache.get(postCacheKey);
       if (postEntry && postEntry.textHash === textHash) {
         return postEntry.translation;
@@ -264,7 +272,7 @@ Rules:
       return cache.get(cacheKey);
     }
 
-    const systemPrompt = humanTranslatePrompt(tone);
+    const systemPrompt = humanTranslatePrompt(tone, keepML);
     const result = await sendToProvider({
       provider: settings.provider,
       apiKey: settings.apiKey,
@@ -276,7 +284,7 @@ Rules:
     persistCache();
 
     if (postId) {
-      const postCacheKey = `v${PROMPT_VERSION}:${tone}:${postId}`;
+      const postCacheKey = `${cachePrefix}:${postId}`;
       postCache.set(postCacheKey, {
         translation: result.text,
         textHash,

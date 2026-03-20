@@ -272,6 +272,7 @@
     const auto = hud.querySelector("#loHudAuto");
     const hide = hud.querySelector("#loHudHide");
     const promoted = hud.querySelector("#loHudPromoted");
+    const keepMentions = hud.querySelector("#loHudKeepMentions");
     const key = hud.querySelector("#loHudApiKey");
     const tokens = hud.querySelector("#loHudTokens");
     const model = hud.querySelector("#loHudModel");
@@ -282,6 +283,7 @@
     if (auto) auto.checked = !!settings.autoTranslate;
     if (hide) hide.checked = !!settings.hideOriginal;
     if (promoted) promoted.checked = settings.removePromoted !== false;
+    if (keepMentions) keepMentions.checked = !!settings.keepMentionsLinks;
     if (key) key.value = settings.apiKey || "";
     if (tokens) tokens.textContent = String(stats.total_tokens || 0);
     if (model)
@@ -364,6 +366,13 @@
             <span class="linkedout-hud-slider"></span>
           </div>
         </label>
+        <label class="linkedout-hud-toggle-row">
+          <span class="linkedout-hud-toggle-label">Keep @mentions and links</span>
+          <div class="linkedout-hud-switch">
+            <input id="loHudKeepMentions" type="checkbox" />
+            <span class="linkedout-hud-slider"></span>
+          </div>
+        </label>
 
         <div class="linkedout-hud-stats">
           <span>Tokens used:</span>
@@ -433,6 +442,7 @@
       autoTranslate: hud.querySelector("#loHudAuto").checked,
       hideOriginal: hud.querySelector("#loHudHide").checked,
       removePromoted: hud.querySelector("#loHudPromoted").checked,
+      keepMentionsLinks: hud.querySelector("#loHudKeepMentions").checked,
     });
 
     const saveHudSettings = async (message = "Saved") => {
@@ -464,7 +474,7 @@
 
     saveBtn.addEventListener("click", () => saveHudSettings("Saved"));
 
-    ["loHudProvider", "loHudTone", "loHudAuto", "loHudHide", "loHudPromoted"].forEach(
+    ["loHudProvider", "loHudTone", "loHudAuto", "loHudHide", "loHudPromoted", "loHudKeepMentions"].forEach(
       (id) => {
         hud.querySelector(`#${id}`).addEventListener("change", () => {
           scheduleHudAutoSave(0);

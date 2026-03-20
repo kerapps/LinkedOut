@@ -49,6 +49,17 @@
     </div>
 
     <div class="popup-section">
+      <label class="toggle-row">
+        <span class="toggle-label">Keep @mentions and links</span>
+        <div class="toggle-switch">
+          <input type="checkbox" id="keepMentionsLinks">
+          <span class="toggle-slider"></span>
+        </div>
+      </label>
+      <p class="field-hint">Preserve person tags and URLs in translations</p>
+    </div>
+
+    <div class="popup-section">
       <label class="field-label" for="provider">LLM Provider</label>
       <select id="provider" class="field-select">
         <option value="openai">OpenAI (gpt-4o-mini)</option>
