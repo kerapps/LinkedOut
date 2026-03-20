@@ -39,6 +39,24 @@ _Coming soon — pending Chrome Web Store review._
 4. Click **Load unpacked**
 5. Select the project folder
 
+### Sideload the ZIP (no build required)
+
+If you prefer not to install from the Chrome Web Store, you can sideload the pre-packaged extension:
+
+1. Download the latest `linkedout.zip` from [Releases](https://github.com/kerapps/LinkedOut/releases), or build it yourself:
+   ```bash
+   git clone https://github.com/kerapps/LinkedOut.git
+   cd LinkedOut
+   ./package.sh
+   ```
+2. Unzip `linkedout.zip` into a folder (e.g. `~/linkedout-ext/`)
+3. Open `chrome://extensions/`
+4. Enable **Developer mode** (top-right toggle)
+5. Click **Load unpacked**
+6. Select the folder where you unzipped the files
+
+The extension will stay active until you remove it. To update, repeat the process with a newer zip.
+
 ## Configuration
 
 Open the extension popup or the in-page HUD to configure:
