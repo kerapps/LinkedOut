@@ -19,6 +19,7 @@ Inspired by [Kagi Translate's LinkedIn Speak](https://translate.kagi.com/?from=e
 - Auto-translate feed mode
 - Hide original post text option
 - Hide promoted / sponsored posts (enabled by default)
+- Keep @mentions and links — optionally preserve clickable person tags and URLs in translations
 - In-page HUD with quick settings and usage stats
 - "Create a post" mode — convert plain text into LinkedIn corporate speak
 - Token usage tracking with estimated cost
@@ -69,6 +70,7 @@ Open the extension popup or the in-page HUD to configure:
 | Auto-translate | Translate feed posts automatically |
 | Hide original | Show only the translated version |
 | Hide promoted | Remove promoted / sponsored posts |
+| Keep @mentions and links | Preserve clickable person tags and URLs in translations |
 
 You need your own API key from [OpenAI](https://platform.openai.com/api-keys) or [Anthropic](https://console.anthropic.com/settings/keys).
 
