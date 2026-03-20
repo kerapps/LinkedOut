@@ -30,6 +30,7 @@
 
   function extractRichText(el) {
     const parts = [];
+    const linkMap = [];
     const walk = (node) => {
       if (node.nodeType === Node.TEXT_NODE) {
         parts.push(node.textContent);
@@ -43,18 +44,42 @@
         const href = node.getAttribute("href") || "";
         const text = (node.innerText || "").trim();
         if (href.includes("/in/") && text) {
-          parts.push(`@${text}`);
+          const marker = `@${text}`;
+          parts.push(marker);
+          linkMap.push({ marker, href: href.split("?")[0], label: text, type: "mention" });
           return;
         }
-        if ((href.startsWith("http") || href.startsWith("www")) && text) {
-          parts.push(`${text} (${href})`);
+        if (href && text && (href.startsWith("http") || href.startsWith("/"))) {
+          parts.push(text);
+          linkMap.push({ marker: text, href, label: text, type: "link" });
           return;
         }
       }
       for (const child of node.childNodes) walk(child);
     };
     walk(el);
-    return normalizeText(parts.join(" "));
+    return { text: normalizeText(parts.join(" ")), linkMap };
+  }
+
+  function linkifyTranslation(translation, linkMap) {
+    if (!linkMap || linkMap.length === 0) return escapeHtml(translation);
+
+    let html = escapeHtml(translation);
+    for (const { marker, href, label, type } of linkMap) {
+      const escapedMarker = escapeHtml(marker);
+      const fullHref = href.startsWith("/") ? `https://www.linkedin.com${href}` : href;
+      const linkHtml = `<a href="${escapeAttr(fullHref)}" target="_blank" rel="noopener noreferrer" class="linkedout-link ${type === "mention" ? "linkedout-mention" : ""}">${escapedMarker}</a>`;
+      html = html.replace(escapedMarker, linkHtml);
+    }
+    return html;
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function escapeAttr(str) {
+    return str.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
   function isInjectedElement(el) {
@@ -239,8 +264,14 @@
       LOG("ACCEPT score:", score.toFixed(1), "relTop:", relativeTop.toFixed(3), preview);
 
       if (!existing || score > existing.score) {
-        const richText = keepMentionsLinks ? extractRichText(el) : text;
-        byContainer.set(container, { container, textEl: el, text: richText, score });
+        let finalText = text;
+        let linkMap = [];
+        if (keepMentionsLinks) {
+          const rich = extractRichText(el);
+          finalText = rich.text;
+          linkMap = rich.linkMap;
+        }
+        byContainer.set(container, { container, textEl: el, text: finalText, linkMap, score });
       }
     }
 
@@ -256,7 +287,7 @@
     return btn;
   }
 
-  function createTranslationCard(translation) {
+  function createTranslationCard(translation, linkMap) {
     const card = document.createElement("div");
     card.className = "linkedout-card";
 
@@ -271,7 +302,11 @@
 
     const body = document.createElement("div");
     body.className = "linkedout-card-body";
-    body.textContent = translation;
+    if (keepMentionsLinks && linkMap && linkMap.length > 0) {
+      body.innerHTML = linkifyTranslation(translation, linkMap);
+    } else {
+      body.textContent = translation;
+    }
 
     card.appendChild(header);
     card.appendChild(body);
@@ -556,7 +591,7 @@
 
   // --- Core logic ---
 
-  async function translatePost(postEl, textEl, text) {
+  async function translatePost(postEl, textEl, text, linkMap) {
     const wrapper =
       postEl.querySelector(".linkedout-wrapper") ||
       createWrapper(postEl, textEl);
@@ -573,7 +608,7 @@
       const translation = await LinkedOutTranslator.translate(text, { postId });
       loading.remove();
 
-      const { card, toggle } = createTranslationCard(translation);
+      const { card, toggle } = createTranslationCard(translation, linkMap);
       wrapper.appendChild(card);
 
       if (hideOriginal) {
@@ -638,7 +673,7 @@
       );
     }
 
-    filteredCandidates.forEach(({ container, textEl, text }) => {
+    filteredCandidates.forEach(({ container, textEl, text, linkMap }) => {
       if (isProcessed(container)) return;
       if (container.querySelector(".linkedout-wrapper")) return;
 
@@ -652,7 +687,7 @@
       markProcessed(container);
 
       if (autoTranslate) {
-        translatePost(container, textEl, text);
+        translatePost(container, textEl, text, linkMap);
         return;
       }
 
@@ -660,7 +695,7 @@
       const btn = createTranslateButton();
       btn.addEventListener("click", () => {
         btn.remove();
-        translatePost(container, textEl, text);
+        translatePost(container, textEl, text, linkMap);
       });
       wrapper.appendChild(btn);
     });
