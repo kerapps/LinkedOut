@@ -25,7 +25,10 @@
   let keepMentionsLinks = false;
 
   function normalizeText(text) {
-    return (text || "").replace(/\s+/g, " ").trim();
+    return (text || "")
+      .replace(/\s+/g, " ")
+      .replace(/\s*[…\.]{2,}\s*(plus|more|see more|voir plus|ver más|mehr|altro)\s*$/i, "")
+      .trim();
   }
 
   function extractRichText(el) {
@@ -40,6 +43,7 @@
       if (isInjectedElement(node)) return;
 
       const tag = node.tagName;
+      if (tag === "BUTTON") return;
       if (tag === "A") {
         const href = node.getAttribute("href") || "";
         const text = (node.innerText || "").trim();
