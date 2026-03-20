@@ -29,7 +29,8 @@ Rules:
 - Vary your openings — mix up sentence structure
 - Keep it shorter than the original
 - NEVER be sarcastic or funny — just painfully honest
-- No hashtags or emojis
+- Strip hashtags (#leadership, #innovation, etc.) and emojis
+- KEEP @mentions of people and any URLs/links from the original
 - Return ONLY the rewritten text`,
 
     sarcastic: `ABSOLUTE RULE #1 — LANGUAGE: Your output MUST be in the EXACT SAME LANGUAGE as the input. If the post is in French, reply in French. If in English, reply in English. If in Spanish, reply in Spanish. NEVER translate between languages. This overrides everything else.
@@ -57,7 +58,8 @@ Rules:
 - SAME POV AS INPUT — "we" stays "we", "I" stays "I"
 - Vary your openings — mix up the format, surprise the reader
 - Keep it shorter than the original
-- No hashtags or emojis
+- Strip hashtags (#leadership, #innovation, etc.) and emojis
+- KEEP @mentions of people and any URLs/links from the original
 - Return ONLY the rewritten text`,
 
     neutral: `ABSOLUTE RULE #1 — LANGUAGE: Your output MUST be in the EXACT SAME LANGUAGE as the input. If the post is in French, reply in French. If in English, reply in English. If in Spanish, reply in Spanish. NEVER translate between languages. This overrides everything else.
@@ -85,11 +87,12 @@ Rules:
 - SAME POV AS INPUT — "we" stays "we", "I" stays "I"
 - Only state verifiable facts from the original
 - Keep it shorter than the original
-- No hashtags or emojis
+- Strip hashtags (#leadership, #innovation, etc.) and emojis
+- KEEP @mentions of people and any URLs/links from the original
 - Return ONLY the rewritten text`,
   };
 
-  const PROMPT_VERSION = 7;
+  const PROMPT_VERSION = 8;
   const cache = new Map();
   const postCache = new Map();
 
