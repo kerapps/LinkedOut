@@ -6,8 +6,6 @@
 
 A Chrome extension that translates LinkedIn corporate speak into plain language — and can rewrite your plain text into LinkedIn-style corporate tone.
 
-Inspired by [Kagi Translate's LinkedIn Speak](https://translate.kagi.com/?from=en&to=LinkedIn+speak), but in reverse for feed clarity.
-
 <!-- Uncomment after Chrome Web Store approval:
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/EXTENSION_ID)](https://chrome.google.com/webstore/detail/EXTENSION_ID)
 -->
